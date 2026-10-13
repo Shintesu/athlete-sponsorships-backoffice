@@ -2,7 +2,7 @@
 
 > Cada fase debe cerrar con la aplicación funcionando y sus pruebas en verde antes de avanzar a la siguiente.
 
-## Fase 1 — Inicializar el proyecto
+## Fase 1 — Inicializar el proyecto (completada)
 - Crear el proyecto con Spring Initializr (Java 21, Maven).
 - Agregar dependencias: Spring Web, Thymeleaf, Spring Data JPA, Validation, driver de PostgreSQL y Lombok.
 - Crear la estructura de paquetes de `com.example.sponsorships`: `controller`, `service`, `repository`, `entity`, `dto`, `enums`, `config`.
