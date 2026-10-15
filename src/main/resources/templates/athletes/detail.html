@@ -12,7 +12,11 @@
 
     <div class="page-header">
         <h1 th:text="${athlete.fullName}">Nombre</h1>
-        <a class="button" th:href="@{/athletes/{id}/edit(id=${athlete.id})}">Editar atleta</a>
+        <div class="actions">
+            <a class="button secondary" th:href="@{/athletes/{id}/edit(id=${athlete.id})}">Editar atleta</a>
+            <a class="button" th:if="${athlete.status.name() == 'ACTIVE'}"
+               th:href="@{/athletes/{id}/contracts/new(id=${athlete.id})}">Nuevo contrato</a>
+        </div>
     </div>
 
     <dl class="detail">
@@ -28,20 +32,27 @@
     </dl>
 
     <h2>Contratos</h2>
-    <p class="empty" th:if="${#lists.isEmpty(athlete.contracts)}">Este atleta todavía no tiene contratos.</p>
-    <table th:unless="${#lists.isEmpty(athlete.contracts)}">
+    <p class="empty" th:if="${#lists.isEmpty(contractViews)}">Este atleta todavía no tiene contratos.</p>
+    <table th:unless="${#lists.isEmpty(contractViews)}">
         <thead>
         <tr>
             <th>Inicio</th>
             <th>Fin</th>
+            <th>Estado</th>
             <th>Observaciones</th>
+            <th>Acción</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="contract : ${athlete.contracts}">
-            <td th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}">Inicio</td>
-            <td th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}">Fin</td>
-            <td th:text="${contract.notes}">Observaciones</td>
+        <tr th:each="view : ${contractViews}">
+            <td th:text="${#temporals.format(view.contract.startDate, 'dd/MM/yyyy')}">Inicio</td>
+            <td th:text="${#temporals.format(view.contract.endDate, 'dd/MM/yyyy')}">Fin</td>
+            <td>
+                <span class="badge" th:classappend="${view.status.name().toLowerCase()}"
+                      th:text="${view.status.label}">Estado</span>
+            </td>
+            <td th:text="${view.contract.notes}">Observaciones</td>
+            <td><a th:href="@{/contracts/{id}(id=${view.contract.id})}">Ver contrato</a></td>
         </tr>
         </tbody>
     </table>

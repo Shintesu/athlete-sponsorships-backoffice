@@ -25,7 +25,7 @@
 - No eliminar atletas con historial: marcarlos como `INACTIVE`.
 - Permitir marcar como inactivo a un atleta aunque tenga contratos sin vencer; esos contratos se conservan.
 
-## Fase 4 — Contratos
+## Fase 4 — Contratos (completada)
 - Crear `ContractService` (el servicio con más lógica de negocio), `ContractController` y las vistas `form` y `detail`.
 - Rutas: `GET /athletes/{id}/contracts/new`, `POST /athletes/{id}/contracts`, `GET /contracts/{id}`, `GET /contracts/{id}/edit`, `POST /contracts/{id}`.
 - Validar que `endDate` sea igual o posterior a `startDate`, y que ambas fechas sean obligatorias: no existen contratos indefinidos.

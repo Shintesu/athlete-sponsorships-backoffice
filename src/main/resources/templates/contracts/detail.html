@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle del contrato</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main>
+    <div th:replace="~{fragments/messages :: messages}"></div>
+
+    <div class="page-header">
+        <h1>Contrato #<span th:text="${contract.id}">1</span></h1>
+        <div class="actions">
+            <a class="button" th:href="@{/contracts/{id}/edit(id=${contract.id})}">Editar contrato</a>
+        </div>
+    </div>
+
+    <dl class="detail">
+        <dt>Atleta</dt>
+        <dd><a th:href="@{/athletes/{id}(id=${contract.athlete.id})}" th:text="${contract.athlete.fullName}">Atleta</a></dd>
+        <dt>Inicio</dt>
+        <dd th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}">Inicio</dd>
+        <dt>Fin</dt>
+        <dd th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}">Fin</dd>
+        <dt>Estado</dt>
+        <dd>
+            <span class="badge" th:classappend="${status.name().toLowerCase()}"
+                  th:text="${status.label}">Estado</span>
+        </dd>
+        <dt>Observaciones</dt>
+        <dd th:text="${contract.notes} ?: '—'">Observaciones</dd>
+    </dl>
+
+    <p><a th:href="@{/athletes/{id}(id=${contract.athlete.id})}">Volver al atleta</a></p>
+</main>
+</body>
+</html>

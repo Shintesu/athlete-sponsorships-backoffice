@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${contractId != null ? 'Editar contrato' : 'Nuevo contrato'}">Contrato</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main>
+    <h1 th:text="${contractId != null ? 'Editar contrato' : 'Nuevo contrato'}">Contrato</h1>
+    <p class="subtitle">Atleta: <span th:text="${athlete.fullName}">Nombre</span></p>
+
+    <form class="form" method="post" th:object="${contractForm}"
+          th:action="${contractId != null} ? @{/contracts/{id}(id=${contractId})} : @{/athletes/{id}/contracts(id=${athlete.id})}">
+        <div class="form-group">
+            <label for="startDate">Fecha de inicio</label>
+            <input type="date" id="startDate" th:field="*{startDate}">
+            <p class="field-error" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">Error</p>
+        </div>
+
+        <div class="form-group">
+            <label for="endDate">Fecha de finalización</label>
+            <input type="date" id="endDate" th:field="*{endDate}">
+            <p class="field-error" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">Error</p>
+            <p class="field-error" th:if="${#fields.hasErrors('endDateOnOrAfterStartDate')}"
+               th:errors="*{endDateOnOrAfterStartDate}">Error</p>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Observaciones</label>
+            <textarea id="notes" th:field="*{notes}" rows="4"></textarea>
+            <p class="field-error" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}">Error</p>
+        </div>
+
+        <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
+            <p th:each="error : ${#fields.globalErrors()}" th:text="${error}">Error</p>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" th:text="${contractId != null ? 'Guardar cambios' : 'Crear contrato'}">Guardar</button>
+            <a class="button secondary"
+               th:href="${contractId != null} ? @{/contracts/{id}(id=${contractId})} : @{/athletes/{id}(id=${athlete.id})}">Cancelar</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>
