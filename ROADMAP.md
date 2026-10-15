@@ -40,9 +40,10 @@
 - Mostrar los beneficios en el detalle del contrato y en el del atleta.
 - Permitir editar un beneficio (nombre, tipo y descripción, con las mismas validaciones) y eliminarlo solo si no está asociado a ningún contrato. Si lo está, mostrar un mensaje en español y no eliminar. Rutas `GET /benefits/{id}/edit`, `POST /benefits/{id}` y `POST /benefits/{id}/delete`.
 
-## Fase 6 — Dashboard
+## Fase 6 — Dashboard (completada)
 - Crear las consultas: atletas activos, contratos por estado (vigentes, por vencer, vencidos, en borrador) y próximos vencimientos ordenados del más cercano al más lejano.
-- Crear `DashboardService`, `DashboardController` (ruta `/` o `/dashboard`) y la vista con tarjetas de indicadores.
+- Crear `DashboardService`, `DashboardController` (ruta canónica `/dashboard`, con `/` redirigiendo a ella) y la vista con tarjetas de indicadores.
+- Calcular el estado de cada contrato reutilizando `ContractService.determineStatus`, sin duplicar la lógica en consultas; los conteos y la lista de próximos vencimientos clasifican cada contrato una sola vez.
 - El indicador de atletas cuenta solo los activos ("Atletas activos"); los indicadores de contratos cuentan todos los contratos, sin importar el estado del atleta.
 - Mostrar los próximos vencimientos con los días restantes como alerta visual simple.
 - Dar acceso a la lista de atletas desde el dashboard.

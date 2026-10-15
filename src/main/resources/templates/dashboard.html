@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main>
+    <div class="page-header">
+        <h1>Dashboard</h1>
+        <a class="button" th:href="@{/athletes}">Ver atletas</a>
+    </div>
+
+    <section class="cards">
+        <div class="card">
+            <span class="card-label">Atletas activos</span>
+            <span class="card-value" th:text="${dashboard.activeAthletes}">0</span>
+        </div>
+        <div class="card" th:each="entry : ${dashboard.contractCounts}">
+            <span class="card-label" th:text="${entry.key.label}">Estado</span>
+            <span class="card-value" th:text="${entry.value}">0</span>
+        </div>
+    </section>
+
+    <h2>Próximos vencimientos</h2>
+    <p class="empty" th:if="${#lists.isEmpty(dashboard.upcomingExpirations)}">No hay contratos próximos a vencer.</p>
+
+    <table th:unless="${#lists.isEmpty(dashboard.upcomingExpirations)}">
+        <thead>
+        <tr>
+            <th>Atleta</th>
+            <th>Disciplina</th>
+            <th>Fecha de fin</th>
+            <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${dashboard.upcomingExpirations}">
+            <td th:text="${item.athleteName}">Atleta</td>
+            <td th:text="${item.discipline}">Disciplina</td>
+            <td th:text="${item.endDate}">Fecha de fin</td>
+            <td>
+                <span class="badge expiring" th:classappend="${item.daysRemaining <= 7 ? 'urgent' : ''}"
+                      th:text="${item.daysRemaining == 1 ? item.daysRemaining + ' día' : item.daysRemaining + ' días'}">días</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

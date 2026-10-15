@@ -97,7 +97,7 @@ Un contrato no puede existir sin atleta, y un beneficio puede pertenecer a vario
 
 | Pantalla            | Ruta                           |
 | ------------------- | ------------------------------ |
-| Dashboard           | `/` o `/dashboard`             |
+| Dashboard           | `/dashboard` (`/` redirige)    |
 | Lista de atletas    | `/athletes`                    |
 | Crear atleta        | `/athletes/new`                |
 | Detalle de atleta   | `/athletes/{id}`               |

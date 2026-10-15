@@ -75,6 +75,11 @@ public class ContractService {
     }
 
     @Transactional(readOnly = true)
+    public List<Contract> findAll() {
+        return contractRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public List<ContractView> findViewsByAthlete(Long athleteId) {
         return findByAthlete(athleteId).stream()
                 .map(contract -> new ContractView(contract, determineStatus(contract)))
@@ -95,11 +100,14 @@ public class ContractService {
             return ContractStatus.EXPIRED;
         }
         // endDate is inclusive: a contract ending today is still inside the 30-day window (SPECS §13).
-        long daysUntilEnd = ChronoUnit.DAYS.between(today, contract.getEndDate());
-        if (daysUntilEnd <= EXPIRING_WINDOW_DAYS) {
+        if (daysUntilEnd(contract) <= EXPIRING_WINDOW_DAYS) {
             return ContractStatus.EXPIRING;
         }
         return ContractStatus.IN_FORCE;
+    }
+
+    public long daysUntilEnd(Contract contract) {
+        return ChronoUnit.DAYS.between(LocalDate.now(clock), contract.getEndDate());
     }
 
     public ContractForm toForm(Contract contract) {

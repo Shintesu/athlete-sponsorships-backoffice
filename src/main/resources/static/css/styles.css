@@ -133,6 +133,12 @@ th {
     border-color: var(--color-danger);
 }
 
+.badge.urgent {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    background: #ffebe9;
+}
+
 .button {
     display: inline-block;
     padding: 0.5rem 1rem;
@@ -190,6 +196,33 @@ th {
     display: flex;
     gap: 0.75rem;
     margin-top: 1.5rem;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-bg);
+}
+
+.card-label {
+    color: var(--color-muted);
+    font-size: 0.85rem;
+}
+
+.card-value {
+    font-size: 1.8rem;
+    font-weight: 700;
 }
 
 .alert {
