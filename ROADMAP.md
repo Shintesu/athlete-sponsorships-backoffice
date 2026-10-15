@@ -9,7 +9,7 @@
 - Configurar `application.properties` con variables de entorno y valores por defecto locales (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `PORT`).
 - Crear la base de datos `sponsorships` y verificar que la aplicación arranque.
 
-## Fase 2 — Modelo
+## Fase 2 — Modelo (completada)
 - Crear los enums `AthleteStatus`, `ContractStatus` y `BenefitType`, con la etiqueta en español de cada valor junto al enum para mostrarla en la interfaz. `ContractStatus` no se guarda en la base de datos: se calcula.
 - Crear las entidades `Athlete` (fullName, discipline, country, status), `Contract` (athlete, startDate, endDate, notes) y `Benefit` (name, type, description).
 - Definir los límites de texto del SPECS §16: `fullName` 150, `discipline` y `country` 100, `notes` 500, nombre de beneficio 100 y descripción de beneficio 500, con la longitud de columna coherente.
