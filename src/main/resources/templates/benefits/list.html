@@ -23,6 +23,7 @@
             <th>Nombre</th>
             <th>Tipo</th>
             <th>Descripción</th>
+            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -30,6 +31,15 @@
             <td th:text="${benefit.name}">Nombre</td>
             <td><span class="badge" th:text="${benefit.type.label}">Tipo</span></td>
             <td th:text="${benefit.description} ?: '—'">Descripción</td>
+            <td>
+                <div class="actions">
+                    <a class="button secondary" th:href="@{/benefits/{id}/edit(id=${benefit.id})}">Editar</a>
+                    <form th:action="@{/benefits/{id}/delete(id=${benefit.id})}" method="post"
+                          onsubmit="return confirm('¿Eliminar este beneficio?');">
+                        <button type="submit" class="button danger">Eliminar</button>
+                    </form>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>

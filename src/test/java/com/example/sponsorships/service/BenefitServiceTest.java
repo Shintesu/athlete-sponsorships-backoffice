@@ -1,7 +1,9 @@
 package com.example.sponsorships.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -9,8 +11,12 @@ import static org.mockito.Mockito.when;
 import com.example.sponsorships.dto.BenefitForm;
 import com.example.sponsorships.entity.Benefit;
 import com.example.sponsorships.enums.BenefitType;
+import com.example.sponsorships.exception.BenefitInUseException;
+import com.example.sponsorships.exception.BenefitNotFoundException;
 import com.example.sponsorships.repository.BenefitRepository;
+import com.example.sponsorships.repository.ContractRepository;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +28,9 @@ class BenefitServiceTest {
 
     @Mock
     private BenefitRepository benefitRepository;
+
+    @Mock
+    private ContractRepository contractRepository;
 
     @InjectMocks
     private BenefitService benefitService;
@@ -47,5 +56,59 @@ class BenefitServiceTest {
         assertThat(benefitService.findAllById(List.of())).isEmpty();
 
         verifyNoInteractions(benefitRepository);
+    }
+
+    @Test
+    void updatesBenefitFromForm() {
+        Benefit benefit = Benefit.builder()
+                .id(1L)
+                .name("Uniforme oficial")
+                .type(BenefitType.EQUIPMENT)
+                .description("Kit completo")
+                .build();
+        when(benefitRepository.findById(1L)).thenReturn(Optional.of(benefit));
+        BenefitForm form = new BenefitForm();
+        form.setName("Uniforme de gala");
+        form.setType(BenefitType.EVENT);
+        form.setDescription("Kit de presentación");
+
+        Benefit updated = benefitService.update(1L, form);
+
+        assertThat(updated.getName()).isEqualTo("Uniforme de gala");
+        assertThat(updated.getType()).isEqualTo(BenefitType.EVENT);
+        assertThat(updated.getDescription()).isEqualTo("Kit de presentación");
+    }
+
+    @Test
+    void deletesBenefitWhenNoContractUsesIt() {
+        Benefit benefit = Benefit.builder().id(1L).name("Uniforme oficial").type(BenefitType.EQUIPMENT).build();
+        when(benefitRepository.findById(1L)).thenReturn(Optional.of(benefit));
+        when(contractRepository.existsByBenefitsId(1L)).thenReturn(false);
+
+        benefitService.delete(1L);
+
+        verify(benefitRepository).delete(benefit);
+    }
+
+    @Test
+    void rejectsDeletingBenefitUsedByContract() {
+        Benefit benefit = Benefit.builder().id(1L).name("Uniforme oficial").type(BenefitType.EQUIPMENT).build();
+        when(benefitRepository.findById(1L)).thenReturn(Optional.of(benefit));
+        when(contractRepository.existsByBenefitsId(1L)).thenReturn(true);
+
+        assertThatThrownBy(() -> benefitService.delete(1L))
+                .isInstanceOf(BenefitInUseException.class);
+
+        verify(benefitRepository, never()).delete(any(Benefit.class));
+    }
+
+    @Test
+    void throwsWhenBenefitDoesNotExist() {
+        when(benefitRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> benefitService.findById(99L))
+                .isInstanceOf(BenefitNotFoundException.class);
+
+        verifyNoInteractions(contractRepository);
     }
 }

@@ -534,6 +534,8 @@ Se utilizará Bean Validation cuando sea apropiado.
 - Tipo obligatorio.
 - Descripción opcional, máximo 500 caracteres.
 
+Las mismas validaciones se aplican al crear y al editar un beneficio.
+
 Los mensajes de validación deben mostrarse en la interfaz de forma comprensible.
 
 ---
@@ -552,7 +554,7 @@ Se priorizará conservar los contratos para mantener el historial.
 
 ### Beneficios
 
-Su eliminación deberá evitar romper asociaciones existentes. Para una primera versión puede optarse por no exponer eliminación desde la interfaz y centrarse en crear, consultar y editar.
+Su eliminación deberá evitar romper asociaciones existentes. Un beneficio solo se elimina si no está asociado a ningún contrato; si está asociado, se muestra un mensaje en español y no se elimina.
 
 ---
 
@@ -815,7 +817,16 @@ POST   /contracts/{id}
 
 ### Beneficios
 
-Se podrá disponer de una sección sencilla para consultar y crear beneficios si resulta necesaria para el flujo de la demo.
+```text
+GET    /benefits
+GET    /benefits/new
+POST   /benefits
+GET    /benefits/{id}/edit
+POST   /benefits/{id}
+POST   /benefits/{id}/delete
+```
+
+Un beneficio solo se puede eliminar si no está asociado a ningún contrato. Si lo está, el sistema muestra un mensaje en español y no lo elimina (ver §17).
 
 ---
 
@@ -1115,11 +1126,15 @@ La etiqueta en español de cada valor de enum que se muestra en la interfaz (por
 
 ## 38. Estado del documento
 
-**Versión:** 1.4
+**Versión:** 1.5
 
 **Tipo de proyecto:** MVP de portafolio
 
 **Estado:** Especificación inicial lista para implementación.
+
+### Cambios respecto a la versión 1.4
+
+- §16, §17 y §27: se habilita editar beneficios (nombre, tipo y descripción, con las mismas validaciones) y eliminar un beneficio solo si no está asociado a ningún contrato; si lo está, se muestra un mensaje en español y no se elimina. Rutas `GET /benefits/{id}/edit`, `POST /benefits/{id}` y `POST /benefits/{id}/delete`.
 
 ### Cambios respecto a la versión 1.0
 

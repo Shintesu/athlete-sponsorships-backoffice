@@ -2,15 +2,16 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Nuevo beneficio</title>
+    <title th:text="${benefitId != null ? 'Editar beneficio' : 'Nuevo beneficio'}">Beneficio</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <main>
-    <h1>Nuevo beneficio</h1>
+    <h1 th:text="${benefitId != null ? 'Editar beneficio' : 'Nuevo beneficio'}">Beneficio</h1>
 
-    <form th:action="@{/benefits}" th:object="${benefitForm}" method="post" class="form">
+    <form th:action="@{${benefitId != null ? '/benefits/' + benefitId : '/benefits'}}"
+          th:object="${benefitForm}" method="post" class="form">
         <div class="form-group">
             <label for="name">Nombre</label>
             <input type="text" id="name" th:field="*{name}">
@@ -34,7 +35,7 @@
         </div>
 
         <div class="form-actions">
-            <button type="submit">Crear beneficio</button>
+            <button type="submit" th:text="${benefitId != null ? 'Guardar cambios' : 'Crear beneficio'}">Guardar</button>
             <a class="button secondary" th:href="@{/benefits}">Cancelar</a>
         </div>
     </form>

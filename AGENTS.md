@@ -43,7 +43,7 @@ Detalle en el SPECS; estas son las que no se negocian.
 - Todo contrato tiene fecha de inicio y de fin. No existen contratos indefinidos.
 - No se pueden crear contratos para un atleta inactivo.
 - Los atletas con historial no se eliminan: pasan a `INACTIVE`. Los contratos se conservan.
-- Un beneficio puede asociarse a varios contratos mediante `contract_benefit`.
+- Un beneficio puede asociarse a varios contratos mediante `contract_benefit`. Se puede editar (nombre, tipo y descripción, con las mismas validaciones) y solo se elimina si no está asociado a ningún contrato; si lo está, se muestra un mensaje en español y no se elimina.
 - Longitudes máximas de texto (SPECS §16): `fullName` 150, `discipline` y `country` 100, `notes` 500, nombre de beneficio 100 y descripción de beneficio 500. La longitud de columna debe coincidir.
 - Un atleta se puede marcar como inactivo aunque tenga contratos sin vencer; esos contratos se conservan y siguen contando en el dashboard.
 - El dashboard muestra los atletas activos, no el total. Los indicadores de contratos cuentan todos los contratos.

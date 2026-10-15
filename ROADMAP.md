@@ -38,6 +38,7 @@
 - Crear `BenefitService` y una sección sencilla para consultar y crear beneficios.
 - Asociar varios beneficios a un contrato desde su formulario; un beneficio puede reutilizarse en varios contratos.
 - Mostrar los beneficios en el detalle del contrato y en el del atleta.
+- Permitir editar un beneficio (nombre, tipo y descripción, con las mismas validaciones) y eliminarlo solo si no está asociado a ningún contrato. Si lo está, mostrar un mensaje en español y no eliminar. Rutas `GET /benefits/{id}/edit`, `POST /benefits/{id}` y `POST /benefits/{id}/delete`.
 
 ## Fase 6 — Dashboard
 - Crear las consultas: atletas activos, contratos por estado (vigentes, por vencer, vencidos, en borrador) y próximos vencimientos ordenados del más cercano al más lejano.

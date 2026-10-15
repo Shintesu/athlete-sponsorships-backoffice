@@ -151,6 +151,10 @@ th {
     border-color: var(--color-border);
 }
 
+.button.danger {
+    background: var(--color-danger);
+}
+
 .form {
     max-width: 480px;
 }

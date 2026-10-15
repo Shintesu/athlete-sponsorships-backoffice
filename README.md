@@ -10,7 +10,7 @@ Sistema web interno para gestionar atletas patrocinados por una empresa, sus con
 - Múltiples contratos históricos por atleta. Todo contrato tiene fecha de inicio y de fin: no existen contratos indefinidos.
 - Estado del contrato determinado por sus fechas: `DRAFT`, `IN_FORCE`, `EXPIRING` (faltan entre 0 y 30 días) y `EXPIRED`.
 - Validación que impide contratos con fechas solapadas con las de otro contrato del atleta que no haya vencido.
-- Beneficios (`EQUIPO`, `PAGO`, `EVENTO`) reutilizables en varios contratos.
+- Beneficios (`EQUIPO`, `PAGO`, `EVENTO`) reutilizables en varios contratos, con edición y eliminación segura: solo se elimina un beneficio que no esté asociado a ningún contrato.
 - Dashboard con indicadores y lista de próximos vencimientos con alerta visual.
 - Datos de demostración que mantienen representados los cuatro estados con el paso del tiempo.
 
@@ -107,6 +107,7 @@ Un contrato no puede existir sin atleta, y un beneficio puede pertenecer a vario
 | Editar contrato     | `/contracts/{id}/edit`         |
 | Lista de beneficios | `/benefits`                    |
 | Crear beneficio     | `/benefits/new`                |
+| Editar beneficio    | `/benefits/{id}/edit`          |
 
 ---
 

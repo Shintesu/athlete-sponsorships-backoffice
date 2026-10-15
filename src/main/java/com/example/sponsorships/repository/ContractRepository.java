@@ -13,4 +13,6 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @EntityGraph(attributePaths = "benefits")
     Optional<Contract> findWithBenefitsById(Long id);
+
+    boolean existsByBenefitsId(Long benefitId);
 }
