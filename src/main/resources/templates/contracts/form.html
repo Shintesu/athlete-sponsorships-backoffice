@@ -42,7 +42,7 @@
                 <li th:each="benefit : ${benefits}">
                     <label>
                         <input type="checkbox" th:field="*{benefitIds}" th:value="${benefit.id}">
-                        <span th:text="${benefit.name}">Nombre</span>
+                        <span class="benefit-name" th:text="${benefit.name}">Nombre</span>
                         <span class="badge" th:text="${benefit.type.label}">Tipo</span>
                     </label>
                 </li>

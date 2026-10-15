@@ -228,24 +228,43 @@ th {
     margin: 0;
 }
 
-.checkbox-list,
 .benefit-list {
     list-style: none;
     padding: 0;
     margin: 0.5rem 0 0;
 }
 
-.checkbox-list label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 400;
-}
-
-.checkbox-list li,
 .benefit-list li {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.35rem;
+}
+
+.checkbox-list {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.35rem 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0;
+}
+
+.checkbox-list li,
+.checkbox-list label {
+    display: contents;
+}
+
+.checkbox-list input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.checkbox-list .benefit-name {
+    min-width: 0;
+}
+
+.checkbox-list .badge {
+    justify-self: start;
 }
