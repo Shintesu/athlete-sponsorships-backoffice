@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Atletas</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main>
+    <div class="page-header">
+        <h1>Atletas</h1>
+        <a class="button" th:href="@{/athletes/new}">Nuevo atleta</a>
+    </div>
+
+    <div th:replace="~{fragments/messages :: messages}"></div>
+
+    <p class="empty" th:if="${#lists.isEmpty(athletes)}">Todavía no hay atletas registrados.</p>
+
+    <table th:unless="${#lists.isEmpty(athletes)}">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Disciplina</th>
+            <th>País</th>
+            <th>Estado</th>
+            <th>Acción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="athlete : ${athletes}">
+            <td th:text="${athlete.fullName}">Nombre</td>
+            <td th:text="${athlete.discipline}">Disciplina</td>
+            <td th:text="${athlete.country}">País</td>
+            <td>
+                <span class="badge" th:classappend="${athlete.status.name().toLowerCase()}"
+                      th:text="${athlete.status.label}">Estado</span>
+            </td>
+            <td><a th:href="@{/athletes/{id}(id=${athlete.id})}">Ver detalle</a></td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${athlete.fullName}">Detalle del atleta</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main>
+    <div th:replace="~{fragments/messages :: messages}"></div>
+
+    <div class="page-header">
+        <h1 th:text="${athlete.fullName}">Nombre</h1>
+        <a class="button" th:href="@{/athletes/{id}/edit(id=${athlete.id})}">Editar atleta</a>
+    </div>
+
+    <dl class="detail">
+        <dt>Disciplina</dt>
+        <dd th:text="${athlete.discipline}">Disciplina</dd>
+        <dt>País</dt>
+        <dd th:text="${athlete.country}">País</dd>
+        <dt>Estado</dt>
+        <dd>
+            <span class="badge" th:classappend="${athlete.status.name().toLowerCase()}"
+                  th:text="${athlete.status.label}">Estado</span>
+        </dd>
+    </dl>
+
+    <h2>Contratos</h2>
+    <p class="empty" th:if="${#lists.isEmpty(athlete.contracts)}">Este atleta todavía no tiene contratos.</p>
+    <table th:unless="${#lists.isEmpty(athlete.contracts)}">
+        <thead>
+        <tr>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Observaciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="contract : ${athlete.contracts}">
+            <td th:text="${#temporals.format(contract.startDate, 'dd/MM/yyyy')}">Inicio</td>
+            <td th:text="${#temporals.format(contract.endDate, 'dd/MM/yyyy')}">Fin</td>
+            <td th:text="${contract.notes}">Observaciones</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p><a th:href="@{/athletes}">Volver a la lista</a></p>
+</main>
+</body>
+</html>

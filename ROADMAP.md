@@ -17,7 +17,7 @@
 - Crear los repositories con Spring Data JPA.
 - Usar Lombok solo con las anotaciones permitidas por el SPECS §20, sin `@Data` en entidades.
 
-## Fase 3 — Atletas
+## Fase 3 — Atletas (completada)
 - Crear `AthleteService`, `AthleteController` y las vistas `list`, `form` y `detail`.
 - Rutas: `GET /athletes`, `GET /athletes/new`, `POST /athletes`, `GET /athletes/{id}`, `GET /athletes/{id}/edit`, `POST /athletes/{id}`.
 - Validar nombre completo, disciplina y país obligatorios, con mensajes en español.
