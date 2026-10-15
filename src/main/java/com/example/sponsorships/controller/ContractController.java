@@ -6,6 +6,7 @@ import com.example.sponsorships.exception.InactiveAthleteException;
 import com.example.sponsorships.exception.InvalidDateRangeException;
 import com.example.sponsorships.exception.OverlappingContractException;
 import com.example.sponsorships.service.AthleteService;
+import com.example.sponsorships.service.BenefitService;
 import com.example.sponsorships.service.ContractService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -22,16 +23,20 @@ public class ContractController {
 
     private final ContractService contractService;
     private final AthleteService athleteService;
+    private final BenefitService benefitService;
 
-    public ContractController(ContractService contractService, AthleteService athleteService) {
+    public ContractController(ContractService contractService, AthleteService athleteService,
+            BenefitService benefitService) {
         this.contractService = contractService;
         this.athleteService = athleteService;
+        this.benefitService = benefitService;
     }
 
     @GetMapping("/athletes/{athleteId}/contracts/new")
     public String createForm(@PathVariable Long athleteId, Model model) {
         model.addAttribute("athlete", athleteService.findById(athleteId));
         model.addAttribute("contractForm", new ContractForm());
+        model.addAttribute("benefits", benefitService.findAll());
         return "contracts/form";
     }
 
@@ -48,6 +53,7 @@ public class ContractController {
             }
         }
         model.addAttribute("athlete", athleteService.findById(athleteId));
+        model.addAttribute("benefits", benefitService.findAll());
         return "contracts/form";
     }
 
@@ -65,6 +71,7 @@ public class ContractController {
         model.addAttribute("contractForm", contractService.toForm(contract));
         model.addAttribute("contractId", id);
         model.addAttribute("athlete", contract.getAthlete());
+        model.addAttribute("benefits", benefitService.findAll());
         return "contracts/form";
     }
 
@@ -83,6 +90,7 @@ public class ContractController {
         Contract contract = contractService.findById(id);
         model.addAttribute("contractId", id);
         model.addAttribute("athlete", contract.getAthlete());
+        model.addAttribute("benefits", benefitService.findAll());
         return "contracts/form";
     }
 }

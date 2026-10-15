@@ -31,6 +31,16 @@
         </dd>
         <dt>Observaciones</dt>
         <dd th:text="${contract.notes} ?: '—'">Observaciones</dd>
+        <dt>Beneficios</dt>
+        <dd>
+            <span class="empty" th:if="${#lists.isEmpty(contract.benefits)}">Sin beneficios asociados.</span>
+            <ul class="benefit-list" th:unless="${#lists.isEmpty(contract.benefits)}">
+                <li th:each="benefit : ${contract.benefits}">
+                    <span th:text="${benefit.name}">Nombre</span>
+                    <span class="badge" th:text="${benefit.type.label}">Tipo</span>
+                </li>
+            </ul>
+        </dd>
     </dl>
 
     <p><a th:href="@{/athletes/{id}(id=${contract.athlete.id})}">Volver al atleta</a></p>

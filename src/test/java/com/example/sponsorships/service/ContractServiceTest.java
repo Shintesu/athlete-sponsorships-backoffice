@@ -8,8 +8,10 @@ import static org.mockito.Mockito.when;
 
 import com.example.sponsorships.dto.ContractForm;
 import com.example.sponsorships.entity.Athlete;
+import com.example.sponsorships.entity.Benefit;
 import com.example.sponsorships.entity.Contract;
 import com.example.sponsorships.enums.AthleteStatus;
+import com.example.sponsorships.enums.BenefitType;
 import com.example.sponsorships.enums.ContractStatus;
 import com.example.sponsorships.exception.InactiveAthleteException;
 import com.example.sponsorships.exception.InvalidDateRangeException;
@@ -39,11 +41,14 @@ class ContractServiceTest {
     @Mock
     private AthleteService athleteService;
 
+    @Mock
+    private BenefitService benefitService;
+
     private ContractService contractService;
 
     @BeforeEach
     void setUp() {
-        contractService = new ContractService(contractRepository, athleteService, FIXED_CLOCK);
+        contractService = new ContractService(contractRepository, athleteService, benefitService, FIXED_CLOCK);
     }
 
     @Test
@@ -119,12 +124,30 @@ class ContractServiceTest {
     void excludesTheContractBeingEditedFromOverlapCheck() {
         Athlete athlete = athlete(1L, AthleteStatus.ACTIVE);
         Contract existing = contract(20L, athlete, TODAY, TODAY.plusMonths(1));
-        when(contractRepository.findById(20L)).thenReturn(Optional.of(existing));
+        when(contractRepository.findWithBenefitsById(20L)).thenReturn(Optional.of(existing));
         when(contractRepository.findByAthleteIdOrderByStartDateDesc(1L)).thenReturn(List.of(existing));
 
         Contract updated = contractService.updateContract(20L, form(TODAY.plusDays(1), TODAY.plusMonths(2), "x"));
 
         assertThat(updated.getEndDate()).isEqualTo(TODAY.plusMonths(2));
+    }
+
+    @Test
+    void associatesMultipleBenefitsToContract() {
+        Athlete athlete = athlete(1L, AthleteStatus.ACTIVE);
+        Benefit uniform = benefit(1L, "Uniforme oficial");
+        Benefit bonus = benefit(2L, "Bonificación mensual");
+        when(athleteService.findById(1L)).thenReturn(athlete);
+        when(contractRepository.findByAthleteIdOrderByStartDateDesc(1L)).thenReturn(List.of());
+        when(benefitService.findAllById(List.of(1L, 2L))).thenReturn(List.of(uniform, bonus));
+        when(contractRepository.save(any(Contract.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ContractForm form = form(TODAY, TODAY.plusMonths(6), null);
+        form.setBenefitIds(List.of(1L, 2L));
+
+        Contract created = contractService.createContract(1L, form);
+
+        assertThat(created.getBenefits()).containsExactly(uniform, bonus);
     }
 
     @Test
@@ -178,6 +201,14 @@ class ContractServiceTest {
                 .athlete(athlete)
                 .startDate(startDate)
                 .endDate(endDate)
+                .build();
+    }
+
+    private Benefit benefit(Long id, String name) {
+        return Benefit.builder()
+                .id(id)
+                .name(name)
+                .type(BenefitType.EQUIPMENT)
                 .build();
     }
 

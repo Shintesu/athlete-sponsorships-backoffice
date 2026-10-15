@@ -4,6 +4,8 @@ import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +26,8 @@ public class ContractForm {
 
     @Size(max = 500, message = "Las observaciones no pueden superar los 500 caracteres")
     private String notes;
+
+    private List<Long> benefitIds = new ArrayList<>();
 
     @AssertTrue(message = "La fecha de finalización no puede ser anterior a la fecha de inicio")
     public boolean isEndDateOnOrAfterStartDate() {

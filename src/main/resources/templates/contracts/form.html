@@ -33,6 +33,22 @@
             <p class="field-error" th:if="${#fields.hasErrors('notes')}" th:errors="*{notes}">Error</p>
         </div>
 
+        <div class="form-group">
+            <label>Beneficios</label>
+            <p class="empty" th:if="${#lists.isEmpty(benefits)}">
+                Todavía no hay beneficios. <a th:href="@{/benefits/new}">Crea uno</a>.
+            </p>
+            <ul class="checkbox-list" th:unless="${#lists.isEmpty(benefits)}">
+                <li th:each="benefit : ${benefits}">
+                    <label>
+                        <input type="checkbox" th:field="*{benefitIds}" th:value="${benefit.id}">
+                        <span th:text="${benefit.name}">Nombre</span>
+                        <span class="badge" th:text="${benefit.type.label}">Tipo</span>
+                    </label>
+                </li>
+            </ul>
+        </div>
+
         <div class="alert alert-error" th:if="${#fields.hasGlobalErrors()}">
             <p th:each="error : ${#fields.globalErrors()}" th:text="${error}">Error</p>
         </div>

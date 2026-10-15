@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Beneficios</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+<main>
+    <div class="page-header">
+        <h1>Beneficios</h1>
+        <a class="button" th:href="@{/benefits/new}">Nuevo beneficio</a>
+    </div>
+
+    <div th:replace="~{fragments/messages :: messages}"></div>
+
+    <p class="empty" th:if="${#lists.isEmpty(benefits)}">Todavía no hay beneficios registrados.</p>
+
+    <table th:unless="${#lists.isEmpty(benefits)}">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Descripción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="benefit : ${benefits}">
+            <td th:text="${benefit.name}">Nombre</td>
+            <td><span class="badge" th:text="${benefit.type.label}">Tipo</span></td>
+            <td th:text="${benefit.description} ?: '—'">Descripción</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

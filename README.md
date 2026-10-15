@@ -105,6 +105,8 @@ Un contrato no puede existir sin atleta, y un beneficio puede pertenecer a vario
 | Crear contrato      | `/athletes/{id}/contracts/new` |
 | Detalle de contrato | `/contracts/{id}`              |
 | Editar contrato     | `/contracts/{id}/edit`         |
+| Lista de beneficios | `/benefits`                    |
+| Crear beneficio     | `/benefits/new`                |
 
 ---
 

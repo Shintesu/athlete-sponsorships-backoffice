@@ -3,6 +3,7 @@ package com.example.sponsorships.service;
 import com.example.sponsorships.dto.ContractForm;
 import com.example.sponsorships.dto.ContractView;
 import com.example.sponsorships.entity.Athlete;
+import com.example.sponsorships.entity.Benefit;
 import com.example.sponsorships.entity.Contract;
 import com.example.sponsorships.enums.AthleteStatus;
 import com.example.sponsorships.enums.ContractStatus;
@@ -14,6 +15,7 @@ import com.example.sponsorships.repository.ContractRepository;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +27,14 @@ public class ContractService {
 
     private final ContractRepository contractRepository;
     private final AthleteService athleteService;
+    private final BenefitService benefitService;
     private final Clock clock;
 
-    public ContractService(ContractRepository contractRepository, AthleteService athleteService, Clock clock) {
+    public ContractService(ContractRepository contractRepository, AthleteService athleteService,
+            BenefitService benefitService, Clock clock) {
         this.contractRepository = contractRepository;
         this.athleteService = athleteService;
+        this.benefitService = benefitService;
         this.clock = clock;
     }
 
@@ -46,6 +51,7 @@ public class ContractService {
                 .startDate(form.getStartDate())
                 .endDate(form.getEndDate())
                 .notes(form.getNotes())
+                .benefits(resolveBenefits(form.getBenefitIds()))
                 .build();
         return contractRepository.save(contract);
     }
@@ -58,12 +64,13 @@ public class ContractService {
         contract.setStartDate(form.getStartDate());
         contract.setEndDate(form.getEndDate());
         contract.setNotes(form.getNotes());
+        contract.setBenefits(resolveBenefits(form.getBenefitIds()));
         return contract;
     }
 
     @Transactional(readOnly = true)
     public Contract findById(Long id) {
-        return contractRepository.findById(id)
+        return contractRepository.findWithBenefitsById(id)
                 .orElseThrow(() -> new ContractNotFoundException(id));
     }
 
@@ -100,7 +107,15 @@ public class ContractService {
         form.setStartDate(contract.getStartDate());
         form.setEndDate(contract.getEndDate());
         form.setNotes(contract.getNotes());
+        form.setBenefitIds(contract.getBenefits().stream().map(Benefit::getId).toList());
         return form;
+    }
+
+    private List<Benefit> resolveBenefits(List<Long> benefitIds) {
+        if (benefitIds == null || benefitIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(benefitService.findAllById(benefitIds));
     }
 
     private void validateDateRange(ContractForm form) {

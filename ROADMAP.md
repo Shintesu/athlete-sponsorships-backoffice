@@ -34,7 +34,7 @@
 - Detectar solapamientos: comparar el rango de fechas (inclusivo en ambos extremos) contra todos los demás contratos del atleta que no hayan vencido (`IN_FORCE`, `EXPIRING` y `DRAFT`). Al editar, excluir el propio contrato.
 - Mostrar mensajes legibles para contrato inexistente, atleta inactivo, fechas inválidas y contrato solapado.
 
-## Fase 5 — Beneficios
+## Fase 5 — Beneficios (completada)
 - Crear `BenefitService` y una sección sencilla para consultar y crear beneficios.
 - Asociar varios beneficios a un contrato desde su formulario; un beneficio puede reutilizarse en varios contratos.
 - Mostrar los beneficios en el detalle del contrato y en el del atleta.

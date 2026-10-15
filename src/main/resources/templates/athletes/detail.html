@@ -39,6 +39,7 @@
             <th>Inicio</th>
             <th>Fin</th>
             <th>Estado</th>
+            <th>Beneficios</th>
             <th>Observaciones</th>
             <th>Acción</th>
         </tr>
@@ -50,6 +51,12 @@
             <td>
                 <span class="badge" th:classappend="${view.status.name().toLowerCase()}"
                       th:text="${view.status.label}">Estado</span>
+            </td>
+            <td>
+                <span th:if="${#lists.isEmpty(view.contract.benefits)}">—</span>
+                <span th:each="benefit, iter : ${view.contract.benefits}">
+                    <span th:text="${benefit.name}">Beneficio</span><span th:unless="${iter.last}">, </span>
+                </span>
             </td>
             <td th:text="${view.contract.notes}">Observaciones</td>
             <td><a th:href="@{/contracts/{id}(id=${view.contract.id})}">Ver contrato</a></td>
