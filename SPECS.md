@@ -651,8 +651,7 @@ Responsabilidades:
 - consultar contratos;
 - validar fechas;
 - comprobar solapamientos;
-- determinar estado por fechas;
-- obtener próximos vencimientos.
+- determinar estado por fechas.
 
 ### DashboardService
 
@@ -1126,11 +1125,15 @@ La etiqueta en español de cada valor de enum que se muestra en la interfaz (por
 
 ## 38. Estado del documento
 
-**Versión:** 1.5
+**Versión:** 1.6
 
 **Tipo de proyecto:** MVP de portafolio
 
 **Estado:** Especificación inicial lista para implementación.
+
+### Cambios respecto a la versión 1.5
+
+- §21: los próximos vencimientos se calculan en `DashboardService` (que reutiliza `ContractService.determineStatus`); se retira esa responsabilidad de `ContractService` para que coincida con la implementación.
 
 ### Cambios respecto a la versión 1.4
 

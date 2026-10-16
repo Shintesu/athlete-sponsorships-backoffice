@@ -10,7 +10,7 @@ Sistema web interno para gestionar atletas patrocinados por una empresa, sus con
 - Múltiples contratos históricos por atleta. Todo contrato tiene fecha de inicio y de fin: no existen contratos indefinidos.
 - Estado del contrato determinado por sus fechas: `DRAFT`, `IN_FORCE`, `EXPIRING` (faltan entre 0 y 30 días) y `EXPIRED`.
 - Validación que impide contratos con fechas solapadas con las de otro contrato del atleta que no haya vencido.
-- Beneficios (`EQUIPO`, `PAGO`, `EVENTO`) reutilizables en varios contratos, con edición y eliminación segura: solo se elimina un beneficio que no esté asociado a ningún contrato.
+- Beneficios (`EQUIPMENT`, `PAYMENT`, `EVENT`) reutilizables en varios contratos, con edición y eliminación segura: solo se elimina un beneficio que no esté asociado a ningún contrato.
 - Dashboard con indicadores y lista de próximos vencimientos con alerta visual.
 - Datos de demostración que mantienen representados los cuatro estados con el paso del tiempo.
 
@@ -18,19 +18,19 @@ Sistema web interno para gestionar atletas patrocinados por una empresa, sus con
 
 ## Stack tecnológico
 
-| Tecnología                    | Uso                                              |
-| ----------------------------- | ------------------------------------------------ |
-| Java 21 LTS                   | Lenguaje principal                               |
-| Spring Boot                   | Framework backend                                |
-| Spring MVC                    | Controladores web                                |
-| Spring Data JPA / Hibernate   | Persistencia y ORM                               |
-| Bean Validation               | Validaciones de formularios                      |
-| Lombok                        | Reducción de código repetitivo (uso acotado)     |
-| Thymeleaf                     | Vistas renderizadas en el servidor               |
-| PostgreSQL                    | Base de datos relacional                         |
-| AWS (EC2 y RDS)               | Despliegue de la demo (plan gratuito)            |
-| Maven                         | Gestión del proyecto                             |
-| JUnit 5, AssertJ y Mockito    | Pruebas (incluidos en Spring Boot Test)          |
+| Tecnología                  | Uso                                              |
+| --------------------------- | ------------------------------------------------ |
+| Java 21 LTS                 | Lenguaje principal                               |
+| Spring Boot                 | Framework backend                                |
+| Spring MVC / Spring Web     | Controladores web                                |
+| Spring Data JPA / Hibernate | Persistencia y ORM                               |
+| Bean Validation             | Validaciones de formularios                      |
+| Thymeleaf                   | Vistas renderizadas en el servidor               |
+| Lombok                      | Reducción de código repetitivo (uso acotado)     |
+| PostgreSQL                  | Base de datos relacional                         |
+| Maven                       | Gestión del proyecto                             |
+| JUnit 5, AssertJ y Mockito  | Pruebas (incluidos en Spring Boot Test)          |
+| AWS (EC2 y RDS)             | Despliegue de la demo (plan gratuito, Fase 10)   |
 
 ---
 
@@ -71,6 +71,12 @@ Athlete 1 ───────── N Contract N ─────── N Benef
 | Contract | id, athlete, startDate, endDate, notes         |
 | Benefit  | id, name, type, description                    |
 
+Valores controlados (enums, con etiqueta en español para la interfaz):
+
+- `AthleteStatus`: `ACTIVE` (Activo), `INACTIVE` (Inactivo).
+- `ContractStatus`: `DRAFT` (Borrador), `IN_FORCE` (Vigente), `EXPIRING` (Por vencer), `EXPIRED` (Vencido). No se persiste.
+- `BenefitType`: `EQUIPMENT` (Equipo), `PAYMENT` (Pago), `EVENT` (Evento).
+
 Un contrato no puede existir sin atleta, y un beneficio puede pertenecer a varios contratos.
 
 ---
@@ -78,8 +84,12 @@ Un contrato no puede existir sin atleta, y un beneficio puede pertenecer a vario
 ## Reglas de negocio
 
 - Un fin de contrato nunca puede ser anterior a su inicio.
-- Un atleta puede tener varios contratos históricos, pero las fechas de un contrato no pueden solaparse con las de otro que no haya vencido, incluidos los que todavía no inician.
-- El estado de vigencia no se guarda: se calcula con la fecha actual.
+- Un atleta puede tener varios contratos históricos, pero las fechas de un contrato no pueden solaparse con las de otro que no haya vencido, incluidos los que todavía no inician. El rango es inclusivo en ambos extremos.
+- El estado de vigencia no se guarda: se calcula a partir de las fechas del contrato y la fecha actual, obtenida de un `Clock` inyectado.
+- No se pueden crear contratos para un atleta inactivo.
+- Los atletas con historial no se eliminan: pasan a `INACTIVE` y conservan sus contratos.
+- Un beneficio solo se elimina si no está asociado a ningún contrato; si lo está, se muestra un mensaje en español y no se elimina.
+- Los campos de texto tienen longitud máxima: nombre completo 150, disciplina y país 100, observaciones 500, y en beneficios nombre 100 y descripción 500.
 
 | Estado     | Condición                                        |
 | ---------- | ------------------------------------------------ |
@@ -88,26 +98,44 @@ Un contrato no puede existir sin atleta, y un beneficio puede pertenecer a vario
 | `EXPIRING` | Ya inició y faltan entre 0 y 30 días para su fin |
 | `EXPIRED`  | Su fecha de fin ya pasó                          |
 
-- El historial de atletas y contratos se conserva.
-- Los campos de texto tienen longitud máxima: nombre completo 150, disciplina y país 100, observaciones 500, y en beneficios nombre 100 y descripción 500.
+El dashboard muestra la cantidad de atletas **activos**; los indicadores de contratos cuentan **todos** los contratos, sin importar el estado del atleta.
 
 ---
 
 ## Pantallas y rutas
 
-| Pantalla            | Ruta                           |
-| ------------------- | ------------------------------ |
-| Dashboard           | `/dashboard` (`/` redirige)    |
-| Lista de atletas    | `/athletes`                    |
-| Crear atleta        | `/athletes/new`                |
-| Detalle de atleta   | `/athletes/{id}`               |
-| Editar atleta       | `/athletes/{id}/edit`          |
-| Crear contrato      | `/athletes/{id}/contracts/new` |
-| Detalle de contrato | `/contracts/{id}`              |
-| Editar contrato     | `/contracts/{id}/edit`         |
-| Lista de beneficios | `/benefits`                    |
-| Crear beneficio     | `/benefits/new`                |
-| Editar beneficio    | `/benefits/{id}/edit`          |
+| Pantalla                | Método y ruta                     |
+| ----------------------- | --------------------------------- |
+| Dashboard               | `GET /dashboard` (`GET /` redirige) |
+| Lista de atletas        | `GET /athletes`                   |
+| Crear atleta            | `GET /athletes/new`, `POST /athletes` |
+| Detalle de atleta       | `GET /athletes/{id}`              |
+| Editar atleta           | `GET /athletes/{id}/edit`, `POST /athletes/{id}` |
+| Crear contrato          | `GET /athletes/{id}/contracts/new`, `POST /athletes/{id}/contracts` |
+| Detalle de contrato     | `GET /contracts/{id}`             |
+| Editar contrato         | `GET /contracts/{id}/edit`, `POST /contracts/{id}` |
+| Lista de beneficios     | `GET /benefits`                   |
+| Crear beneficio         | `GET /benefits/new`, `POST /benefits` |
+| Editar beneficio        | `GET /benefits/{id}/edit`, `POST /benefits/{id}` |
+| Eliminar beneficio      | `POST /benefits/{id}/delete`      |
+
+---
+
+## Capturas de la demo
+
+Marcadores de posición para completar con las imágenes definitivas en `docs/`:
+
+![Dashboard](docs/dashboard.png)
+
+![Lista de atletas](docs/athletes-list.png)
+
+![Detalle de atleta con historial de contratos](docs/athlete-detail.png)
+
+![Formulario de nuevo contrato con beneficios](docs/contract-form.png)
+
+![Detalle de contrato con estado calculado](docs/contract-detail.png)
+
+![Gestión de beneficios](docs/benefits-list.png)
 
 ---
 
@@ -126,6 +154,7 @@ La aplicación se puede demostrar en pocos minutos:
 ## Cómo ejecutar el proyecto
 
 ### Requisitos previos
+
 - Java 21
 - Maven
 - PostgreSQL en ejecución
@@ -135,13 +164,14 @@ La aplicación se puede demostrar en pocos minutos:
 ```bash
 # 1. Clonar el repositorio
 git clone <url-del-repositorio>
-cd athlete-sponsorships-backoffice
+cd 001-patrocinios
 
-# 2. Crear la base de datos
+# 2. Crear las bases de datos (la de desarrollo y la de pruebas)
 createdb sponsorships
+createdb sponsorships_test
 
-# 3. Definir las variables de entorno
-export DB_PASSWORD=postgres
+# 3. Definir la contraseña de PostgreSQL sin dejar el valor en el repositorio
+read -rsp "DB_PASSWORD: " DB_PASSWORD && export DB_PASSWORD
 # Opcionales (valores por defecto para entorno local):
 # export DB_URL=jdbc:postgresql://localhost:5432/sponsorships
 # export DB_USERNAME=postgres
@@ -151,7 +181,7 @@ export DB_PASSWORD=postgres
 SPRING_PROFILES_ACTIVE=demo mvn spring-boot:run
 ```
 
-La aplicación quedará disponible en `http://localhost:8080`. Las credenciales nunca se almacenan en el repositorio.
+La aplicación quedará disponible en `http://localhost:8080`. `DB_PASSWORD` es obligatoria y no tiene valor por defecto; las credenciales nunca se almacenan en el repositorio.
 
 ---
 
@@ -168,8 +198,8 @@ La demo corre en AWS con el plan gratuito: una instancia EC2 ejecuta el JAR y un
 
 ## Pruebas
 
-- **Unit tests** de los Services con un `Clock` fijo: contrato vigente, por vencer y vencido; fechas inválidas; solapamiento; múltiples beneficios.
-- **Integration tests** de los casos principales de persistencia, contra una base PostgreSQL local independiente (`sponsorships_test`). Requieren `DB_PASSWORD` definido, igual que la aplicación.
+- **Unit tests** de los Services con un `Clock` fijo: contrato en borrador, vigente, por vencer y vencido; fecha final anterior a la inicial; solapamiento con contratos que no hayan vencido (incluidos los futuros); contrato nuevo permitido cuando los anteriores ya vencieron; validaciones de formularios; dashboard.
+- **Integration tests** de los casos principales de persistencia, contra una base PostgreSQL local independiente (`sponsorships_test`) con el perfil `test` y el esquema recreado en cada ejecución. Requieren `DB_PASSWORD` definido, igual que la aplicación.
 
 ```bash
 createdb sponsorships_test
@@ -178,28 +208,40 @@ mvn test
 
 ---
 
+## Decisiones técnicas
+
+- **Estado calculado con `Clock`:** el estado de vigencia no se persiste en `Contract`. `ContractService.determineStatus` lo deriva de `startDate`, `endDate` y `LocalDate.now(clock)`, con un `Clock` inyectado (`ClockConfig`) que en producción es el del sistema y en pruebas se fija con `Clock.fixed`. Así los cuatro estados son mutuamente excluyentes, nunca quedan desactualizados y se prueban sin depender del día real.
+- **Solapamiento inclusivo contra contratos no vencidos:** al crear o editar, el rango de fechas se compara (extremos inclusivos) contra los demás contratos del mismo atleta que no estén `EXPIRED` (`DRAFT`, `IN_FORCE` y `EXPIRING`). Los `DRAFT` cuentan porque pasarán a estar en vigor; al editar se excluye el propio contrato.
+- **Borrado lógico de atletas:** los atletas con historial no se eliminan. Se marcan como `INACTIVE` y sus contratos se conservan y siguen contando en el dashboard. Un atleta inactivo no admite contratos nuevos.
+- **Eliminación segura de beneficios:** un beneficio solo se elimina si ningún contrato lo referencia. `BenefitService.delete` comprueba la asociación (`existsByBenefitsId`) y lanza `BenefitInUseException` con un mensaje en español cuando está en uso.
+- **Una sola fuente de verdad para los estados:** `DashboardService` reutiliza `ContractService.determineStatus` y clasifica cada contrato una sola vez, de modo que los conteos y la lista de próximos vencimientos comparten la misma lógica y no pueden divergir.
+
+---
+
 ## Estructura del proyecto
 
 ```text
 src/main/java/com/example/sponsorships/
-├── controller/
-├── service/
-├── repository/
-├── entity/
+├── config/       (ClockConfig, DemoDataLoader)
+├── controller/   (Dashboard, Athlete, Contract, Benefit, GlobalExceptionHandler)
 ├── dto/
+├── entity/
 ├── enums/
-└── config/
+├── exception/
+├── repository/
+└── service/
 
 src/main/resources/
 ├── application.properties
 ├── templates/
 │   ├── dashboard.html
+│   ├── error.html
 │   ├── athletes/
+│   ├── benefits/
 │   ├── contracts/
 │   └── fragments/
 └── static/
-    ├── css/
-    └── js/
+    └── css/
 ```
 
 ---

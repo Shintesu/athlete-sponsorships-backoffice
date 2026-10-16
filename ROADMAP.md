@@ -61,7 +61,7 @@
 - Integration tests para los casos más importantes de persistencia, contra la base PostgreSQL local `sponsorships_test` con el perfil `test` (SPECS §31 y §32). Crear la base antes de ejecutar las pruebas.
 - Revisar validaciones y navegación, y mejorar la presentación visual sin sobrecargar el proyecto.
 
-## Fase 9 — Documentación y preparación del portafolio
+## Fase 9 — Documentación y preparación del portafolio (completada)
 - Completar el README con descripción, stack, instrucciones de ejecución y capturas o GIF de los escenarios de demo.
 - Verificar que no haya credenciales en el repositorio ni en su historial.
 - Revisar la consistencia entre `SPECS.md` y la implementación final.
