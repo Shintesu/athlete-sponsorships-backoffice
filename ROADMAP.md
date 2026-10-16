@@ -49,7 +49,7 @@
 - Dar acceso a la lista de atletas desde el dashboard.
 - Calcular los conteos con las mismas condiciones de fecha que `ContractService` y verificar que coincidan.
 
-## Fase 7 — Datos de demo
+## Fase 7 — Datos de demo (completada)
 - Crear datos suficientes para que el dashboard se vea completo al arrancar: varios atletas, contratos en los cuatro estados y beneficios de los tres tipos.
 - Generar las fechas relativas a la fecha actual, mediante un `CommandLineRunner` activado con el perfil `demo`, para que "por vencer" y "vencido" sigan representados con el paso del tiempo. No usar fechas fijas.
 - Evitar duplicar los datos cuando la aplicación se reinicia.
