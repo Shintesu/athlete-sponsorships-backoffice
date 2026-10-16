@@ -10,6 +10,7 @@ import com.example.sponsorships.enums.AthleteStatus;
 import com.example.sponsorships.enums.ContractStatus;
 import com.example.sponsorships.repository.AthleteRepository;
 import com.example.sponsorships.repository.ContractRepository;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.EnumMap;
 import java.util.List;
@@ -37,9 +38,12 @@ class DashboardIntegrationTest {
     @Autowired
     private DashboardService dashboardService;
 
+    @Autowired
+    private Clock clock;
+
     @Test
     void countsMatchTheRealStatusOfEachPersistedContract() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
         Athlete athlete = athleteRepository.save(athlete("Atleta Activo", AthleteStatus.ACTIVE));
         athleteRepository.save(athlete("Atleta Inactivo", AthleteStatus.INACTIVE));
         contractRepository.save(contract(athlete, today.plusDays(5), today.plusDays(20)));

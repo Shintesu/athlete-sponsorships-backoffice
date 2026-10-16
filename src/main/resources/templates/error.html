@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Error</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
@@ -10,7 +11,7 @@
 <main>
     <h1>Ha ocurrido un problema</h1>
     <p class="error-message" th:text="${message} ?: 'No se pudo completar la operación.'">Error</p>
-    <p><a th:href="@{/athletes}">Volver a la lista de atletas</a></p>
+    <p><a th:href="@{/dashboard}">Volver al inicio</a></p>
 </main>
 </body>
 </html>

@@ -111,4 +111,17 @@ class BenefitServiceTest {
 
         verifyNoInteractions(contractRepository);
     }
+
+    @Test
+    void throwsWhenUpdatingAnUnknownBenefit() {
+        when(benefitRepository.findById(99L)).thenReturn(Optional.empty());
+        BenefitForm form = new BenefitForm();
+        form.setName("Uniforme");
+        form.setType(BenefitType.EQUIPMENT);
+
+        assertThatThrownBy(() -> benefitService.update(99L, form))
+                .isInstanceOf(BenefitNotFoundException.class);
+
+        verify(benefitRepository, never()).save(any(Benefit.class));
+    }
 }

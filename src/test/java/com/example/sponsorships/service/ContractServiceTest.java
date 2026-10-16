@@ -121,6 +121,42 @@ class ContractServiceTest {
     }
 
     @Test
+    void rejectsOverlapWhenRangesTouchAtOneEndpoint() {
+        Athlete athlete = athlete(1L, AthleteStatus.ACTIVE);
+        Contract existing = contract(13L, athlete, TODAY.minusDays(10), TODAY.plusDays(5));
+        when(athleteService.findById(1L)).thenReturn(athlete);
+        when(contractRepository.findByAthleteIdOrderByStartDateDesc(1L)).thenReturn(List.of(existing));
+
+        assertThatThrownBy(() -> contractService.createContract(1L, form(TODAY.plusDays(5), TODAY.plusDays(10), null)))
+                .isInstanceOf(OverlappingContractException.class);
+    }
+
+    @Test
+    void allowsContractStartingTheDayAfterAnExistingRangeEnds() {
+        Athlete athlete = athlete(1L, AthleteStatus.ACTIVE);
+        Contract existing = contract(14L, athlete, TODAY.minusDays(10), TODAY.plusDays(5));
+        when(athleteService.findById(1L)).thenReturn(athlete);
+        when(contractRepository.findByAthleteIdOrderByStartDateDesc(1L)).thenReturn(List.of(existing));
+        when(contractRepository.save(any(Contract.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Contract created = contractService.createContract(1L, form(TODAY.plusDays(6), TODAY.plusDays(15), null));
+
+        assertThat(created).isNotNull();
+    }
+
+    @Test
+    void allowsContractWithASingleDayRange() {
+        Athlete athlete = athlete(1L, AthleteStatus.ACTIVE);
+        when(athleteService.findById(1L)).thenReturn(athlete);
+        when(contractRepository.findByAthleteIdOrderByStartDateDesc(1L)).thenReturn(List.of());
+        when(contractRepository.save(any(Contract.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        Contract created = contractService.createContract(1L, form(TODAY, TODAY, null));
+
+        assertThat(created.getStartDate()).isEqualTo(created.getEndDate());
+    }
+
+    @Test
     void excludesTheContractBeingEditedFromOverlapCheck() {
         Athlete athlete = athlete(1L, AthleteStatus.ACTIVE);
         Contract existing = contract(20L, athlete, TODAY, TODAY.plusMonths(1));

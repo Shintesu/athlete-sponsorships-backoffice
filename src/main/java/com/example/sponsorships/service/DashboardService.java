@@ -7,7 +7,7 @@ import com.example.sponsorships.enums.AthleteStatus;
 import com.example.sponsorships.enums.ContractStatus;
 import com.example.sponsorships.repository.AthleteRepository;
 import java.util.Comparator;
-import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.stereotype.Service;
@@ -15,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DashboardService {
+
+    private static final List<ContractStatus> STATUS_DISPLAY_ORDER = List.of(
+            ContractStatus.IN_FORCE, ContractStatus.EXPIRING, ContractStatus.EXPIRED, ContractStatus.DRAFT);
 
     private final AthleteRepository athleteRepository;
     private final ContractService contractService;
@@ -35,8 +38,8 @@ public class DashboardService {
     }
 
     private Map<ContractStatus, Long> countByStatus(List<Classified> classified) {
-        Map<ContractStatus, Long> counts = new EnumMap<>(ContractStatus.class);
-        for (ContractStatus status : ContractStatus.values()) {
+        Map<ContractStatus, Long> counts = new LinkedHashMap<>();
+        for (ContractStatus status : STATUS_DISPLAY_ORDER) {
             counts.put(status, 0L);
         }
         for (Classified entry : classified) {
@@ -51,6 +54,8 @@ public class DashboardService {
                 .map(Classified::contract)
                 .sorted(Comparator.comparing(Contract::getEndDate))
                 .map(contract -> new ExpiringContractView(
+                        contract.getAthlete().getId(),
+                        contract.getId(),
                         contract.getAthlete().getFullName(),
                         contract.getAthlete().getDiscipline(),
                         contract.getEndDate(),

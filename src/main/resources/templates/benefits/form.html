@@ -2,6 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:text="${benefitId != null ? 'Editar beneficio' : 'Nuevo beneficio'}">Beneficio</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
@@ -14,13 +15,13 @@
           th:object="${benefitForm}" method="post" class="form">
         <div class="form-group">
             <label for="name">Nombre</label>
-            <input type="text" id="name" th:field="*{name}">
+            <input type="text" id="name" th:field="*{name}" maxlength="100" required>
             <p class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</p>
         </div>
 
         <div class="form-group">
             <label for="type">Tipo</label>
-            <select id="type" th:field="*{type}">
+            <select id="type" th:field="*{type}" required>
                 <option th:each="type : ${types}"
                         th:value="${type}"
                         th:text="${type.label}">Tipo</option>
@@ -30,7 +31,7 @@
 
         <div class="form-group">
             <label for="description">Descripción</label>
-            <textarea id="description" th:field="*{description}" rows="4"></textarea>
+            <textarea id="description" th:field="*{description}" rows="4" maxlength="500"></textarea>
             <p class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Error</p>
         </div>
 

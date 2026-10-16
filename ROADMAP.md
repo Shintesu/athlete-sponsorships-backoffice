@@ -55,7 +55,7 @@
 - Evitar duplicar los datos cuando la aplicación se reinicia.
 - Preparar los cinco escenarios de demo del SPECS §30.
 
-## Fase 8 — Pruebas y pulido
+## Fase 8 — Pruebas y pulido (completada)
 - Unit tests de los Services con `Clock.fixed`: contrato en borrador, vigente, por vencer y vencido; fecha final anterior a la inicial; solapamiento con contratos que no hayan vencido (incluidos los futuros) y contrato nuevo permitido cuando los anteriores ya vencieron; atleta con campos vacíos; contrato con múltiples beneficios.
 - Verificar que el dashboard muestre los indicadores correctos.
 - Integration tests para los casos más importantes de persistencia, contra la base PostgreSQL local `sponsorships_test` con el perfil `test` (SPECS §31 y §32). Crear la base antes de ejecutar las pruebas.
