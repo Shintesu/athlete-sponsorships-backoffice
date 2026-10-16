@@ -30,7 +30,7 @@ Sistema web interno para gestionar atletas patrocinados por una empresa, sus con
 | PostgreSQL                  | Base de datos relacional                         |
 | Maven                       | Gestión del proyecto                             |
 | JUnit 5, AssertJ y Mockito  | Pruebas (incluidos en Spring Boot Test)          |
-| AWS (EC2 y RDS)             | Despliegue de la demo (plan gratuito, Fase 10)   |
+| AWS (EC2 y RDS)             | Despliegue de la demo (plan gratuito)            |
 
 ---
 
@@ -164,11 +164,11 @@ La aplicación se puede demostrar en pocos minutos:
 ```bash
 # 1. Clonar el repositorio
 git clone <url-del-repositorio>
-cd 001-patrocinios
+cd athlete-sponsorships-backoffice
 
 # 2. Crear las bases de datos (la de desarrollo y la de pruebas)
-createdb sponsorships
-createdb sponsorships_test
+createdb -h localhost -U postgres sponsorships
+createdb -h localhost -U postgres sponsorships_test
 
 # 3. Definir la contraseña de PostgreSQL sin dejar el valor en el repositorio
 read -rsp "DB_PASSWORD: " DB_PASSWORD && export DB_PASSWORD
@@ -187,12 +187,12 @@ La aplicación quedará disponible en `http://localhost:8080`. `DB_PASSWORD` es 
 
 ## Despliegue en AWS
 
-La demo corre en AWS con el plan gratuito: una instancia EC2 ejecuta el JAR y una base RDS PostgreSQL guarda los datos.
+El despliegue de la demo en AWS se realizará cuando el proyecto esté terminado: una instancia EC2 ejecutará el JAR y una base RDS PostgreSQL guardará los datos.
 
-- **Demo en vivo:** `<url-de-la-demo>`, disponible mientras dure el plan gratuito de AWS (hasta abril de 2027).
-- Funciona con datos de demostración y no tiene autenticación, por lo que no debe usarse con datos reales.
-- La configuración entra por variables de entorno (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `PORT`); no se versionan credenciales.
-- El despliegue es manual: JAR más servicio `systemd`. No usa Docker ni CI/CD.
+- **Demo en vivo:** `<url-de-la-demo>`, estará disponible mientras dure el plan gratuito de AWS (hasta abril de 2027).
+- Funcionará con datos de demostración y no tendrá autenticación, por lo que no deberá usarse con datos reales.
+- La configuración entrará por variables de entorno (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `PORT`); no se versionarán credenciales.
+- El despliegue será manual: JAR más servicio `systemd`. No usará Docker ni CI/CD.
 
 ---
 
@@ -202,7 +202,6 @@ La demo corre en AWS con el plan gratuito: una instancia EC2 ejecuta el JAR y un
 - **Integration tests** de los casos principales de persistencia, contra una base PostgreSQL local independiente (`sponsorships_test`) con el perfil `test` y el esquema recreado en cada ejecución. Requieren `DB_PASSWORD` definido, igual que la aplicación.
 
 ```bash
-createdb sponsorships_test
 mvn test
 ```
 
@@ -221,6 +220,8 @@ mvn test
 ## Estructura del proyecto
 
 ```text
+docs/           (capturas de la demo)
+
 src/main/java/com/example/sponsorships/
 ├── config/       (ClockConfig, DemoDataLoader)
 ├── controller/   (Dashboard, Athlete, Contract, Benefit, GlobalExceptionHandler)
