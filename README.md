@@ -123,7 +123,9 @@ El dashboard muestra la cantidad de atletas **activos**; los indicadores de cont
 
 ## Capturas de la demo
 
-Marcadores de posición para completar con las imágenes definitivas en `docs/`:
+Capturas de la demo con datos ficticios.
+
+![Demo](docs/demo.gif)
 
 ![Dashboard](docs/dashboard.png)
 
