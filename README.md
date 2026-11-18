@@ -189,12 +189,12 @@ La aplicación quedará disponible en `http://localhost:8080`. `DB_PASSWORD` es 
 
 ## Despliegue en AWS
 
-El despliegue de la demo en AWS se realizará cuando el proyecto esté terminado: una instancia EC2 ejecutará el JAR y una base RDS PostgreSQL guardará los datos.
+La demo está desplegada en AWS: una instancia EC2 ejecuta el JAR como servicio `systemd` y una base RDS PostgreSQL guarda los datos.
 
 - **Demo en vivo:** http://3.132.35.8/dashboard (HTTP, sin certificado, datos ficticios). Disponible como máximo hasta abril de 2027 y puede estar apagada para ahorrar créditos: si no responde, mira el GIF de arriba.
-- Funcionará con datos de demostración y no tendrá autenticación, por lo que no deberá usarse con datos reales.
-- La configuración entrará por variables de entorno (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `PORT`); no se versionarán credenciales.
-- El despliegue será manual: JAR más servicio `systemd`. No usará Docker ni CI/CD.
+- Funciona con datos de demostración y no tiene autenticación, por lo que no debe usarse con datos reales.
+- La configuración entra por variables de entorno (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `PORT`); no se versionan credenciales.
+- El despliegue es manual: JAR más servicio `systemd`. No usa Docker ni CI/CD.
 
 ---
 
