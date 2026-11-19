@@ -254,7 +254,7 @@ The demo is deployed on AWS: an EC2 instance runs the JAR as a `systemd` service
 
 ## AI-assisted development
 
-This project was built with a spec-driven workflow using AI coding agents (Claude, and opencode with DeepSeek). The scope and decisions are written down first in the specification and the phased roadmap, and the rules for the agents live in `AGENTS.md`. Each phase is closed with a manual review and automated tests. See *Project documentation* below.
+This project was built with a spec-driven workflow using AI coding agents (Claude, and opencode with DeepSeek). The scope and decisions are written down first in the specification and the phased roadmap, and the rules for the agents live in `AGENTS.md`. Each phase is closed after reviewing the code changes, testing the running app by hand and passing the automated tests. See *Project documentation* below.
 
 ## Project documentation
 
