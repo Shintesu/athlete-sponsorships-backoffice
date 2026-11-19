@@ -252,6 +252,10 @@ La demo está desplegada en AWS: una instancia EC2 ejecuta el JAR como servicio 
 - La configuración entra por variables de entorno (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `PORT`); no se versionan credenciales.
 - El despliegue es manual: JAR más servicio `systemd`. No usa Docker ni CI/CD.
 
+## Desarrollo asistido por IA
+
+Este proyecto se construyó con un flujo guiado por especificaciones, usando agentes de IA para programar (Claude y opencode con DeepSeek). El alcance y las decisiones se documentan primero en la especificación y en el roadmap por fases, y las reglas para los agentes están en `AGENTS.md`. Cada fase se cierra con revisión manual y pruebas automatizadas. Ver *Documentación del proyecto* más abajo.
+
 ## Documentación del proyecto
 
 | Archivo | Contenido |
