@@ -252,6 +252,10 @@ The demo is deployed on AWS: an EC2 instance runs the JAR as a `systemd` service
 - Configuration comes in through environment variables (`DB_URL`, `DB_USERNAME`, `DB_PASSWORD`, `PORT`); credentials are not versioned.
 - Deployment is manual: JAR plus a `systemd` service. It does not use Docker or CI/CD.
 
+## AI-assisted development
+
+This project was built with a spec-driven workflow using AI coding agents (Claude, and opencode with DeepSeek). The scope and decisions are written down first in the specification and the phased roadmap, and the rules for the agents live in `AGENTS.md`. Each phase is closed with a manual review and automated tests. See *Project documentation* below.
+
 ## Project documentation
 
 The project documents are written in Spanish.
